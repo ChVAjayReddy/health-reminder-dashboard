@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Drink Water",
+        "time": "10:00 AM",
+        "completed": true,
+        "id": 1
+    },
+    {
+        "name": "Morning Exercise",
+        "time": "11:00 AM",
+        "completed": true,
+        "id": 2
+    },
+    {
+        "name": "Take Medicine",
+        "time": "12:30 PM",
+        "completed": false,
+        "id": 3
+    },
+    {
+        "name": "Eye Relaxation",
+        "time": "2:00 PM",
+        "completed": false,
+        "id": 4
+    },
+    {
+        "name": "Tablet",
+        "time": "5:00 PM",
+        "completed": true,
+        "id": 5
+    }
+]

@@ -1,34 +1,48 @@
 // src/components/Dashboard.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReminderForm from "./ReminderForm";
 import ReminderList from "./ReminderList";
-import DailySummary from "./DailySummary"; // For the progress bar and summary
+import DailySummary from "./DailySummary";
+
+const BASE_URL = "http://localhost:5000"; // Replace with deployed backend URL when deployed
 
 const Dashboard = () => {
-  // State to hold the list of reminders
-  const [reminders, setReminders] = useState([
-    { id: 1, name: "Drink Water (250ml)", time: "10:00 AM", completed: true },
-    { id: 2, name: "Take Medicine X", time: "12:30 PM", completed: false },
-    { id: 3, name: "Drink Water (250ml)", time: "02:00 PM", completed: false },
-  ]);
+  const [reminders, setReminders] = useState([]);
 
-  // Function to add a new reminder
-  const addReminder = (newReminder) => {
-    setReminders([
-      ...reminders,
-      { id: Date.now(), ...newReminder, completed: false }, // Add ID and default completed status
-    ]);
+  // Fetch all reminders on load
+  useEffect(() => {
+    fetch(`${BASE_URL}/api/reminders`)
+      .then((res) => res.json())
+      .then((data) => setReminders(data))
+      .catch((err) => console.error("Error fetching reminders:", err));
+  }, []);
+
+  // Add a new reminder
+  const addReminder = async (newReminder) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/reminders`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReminder),
+      });
+      const savedReminder = await res.json();
+      setReminders([...reminders, savedReminder]);
+    } catch (err) {
+      console.error("Error adding reminder:", err);
+    }
   };
 
-  // Function to toggle the completed status of a reminder
-  const toggleReminder = (id) => {
-    setReminders(
-      reminders.map((reminder) =>
-        reminder.id === id
-          ? { ...reminder, completed: !reminder.completed }
-          : reminder
-      )
-    );
+  // Toggle completed status
+  const toggleReminder = async (id) => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/reminders/${id}`, {
+        method: "PATCH",
+      });
+      const updatedReminder = await res.json();
+      setReminders(reminders.map((r) => (r._id === id ? updatedReminder : r)));
+    } catch (err) {
+      console.error("Error toggling reminder:", err);
+    }
   };
 
   return (
@@ -43,7 +57,7 @@ const Dashboard = () => {
       </header>
 
       <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Form and Summary */}
+        {/* Left Column */}
         <div className="lg:col-span-1 space-y-8">
           <div className="bg-white p-6 shadow-xl rounded-lg border border-gray-100">
             <h2 className="text-2xl font-semibold text-gray-800 mb-4">
@@ -60,7 +74,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Right Column: Reminder List */}
+        {/* Right Column */}
         <div className="lg:col-span-2 bg-white p-6 shadow-xl rounded-lg border border-gray-100">
           <h2 className="text-2xl font-semibold text-gray-800 mb-4">
             Upcoming Tasks

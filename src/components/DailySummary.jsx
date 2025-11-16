@@ -8,12 +8,10 @@ const DailySummary = ({ reminders }) => {
 
   return (
     <div className="space-y-4">
-      {/* Daily Summary Count */}
       <p className="text-xl font-medium text-gray-800">
-        You've completed **{completed}** out of **{total}** tasks today.
+        You've completed {completed} out of {total} tasks today.
       </p>
 
-      {/* Progress Bar Visualization */}
       <div>
         <div className="flex justify-between mb-1">
           <span className="text-base font-medium text-indigo-700">
